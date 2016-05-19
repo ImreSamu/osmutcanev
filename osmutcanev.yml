@@ -1,0 +1,76 @@
+use_single_id_space: true
+
+tables:
+
+  addressname:
+    fields:
+    - name: id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - key: alt_name
+      name: alt_name
+      type: string      
+    - name: key
+      type: mapping_key 
+    - name: value
+      type: mapping_value
+               
+    type: geometry        
+    type_mappings:
+      points:  
+        highway:
+        - pedestrian
+        - footway
+        - residential
+        leisure:
+        - park
+        place:
+        - hamlet
+        - farm
+        - locality
+        - allotments
+        - isolated_dwelling
+        railway:
+        - station
+        - halt
+        building:
+        - train_station
+      linestrings:  
+        highway:
+        - __any__
+        leisure:
+        - park
+        place:
+        - hamlet
+        - farm
+        - locality
+        - allotments
+        - isolated_dwelling
+        railway:
+        - station
+        - halt    
+      polygons:  
+        highway:
+        - pedestrian
+        - footway
+        - residential
+        leisure:
+        - park
+        place:
+        - hamlet
+        - farm
+        - locality
+        - allotments
+        - isolated_dwelling
+        railway:
+        - station
+        - halt
+        building:
+        - train_station        
+
+    
+    

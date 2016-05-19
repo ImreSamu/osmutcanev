@@ -1,0 +1,24 @@
+use_single_id_space: true
+
+tables:
+  admin:
+    fields:
+    - name: id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: name
+      name: name
+      type: string
+    - key: wikipedia
+      name: wikipedia
+      type: string   
+    - name: type
+      type: mapping_value
+    - key: admin_level
+      name: admin_level
+      type: integer
+    mapping:
+      boundary:
+      - administrative
+    type: polygon    
