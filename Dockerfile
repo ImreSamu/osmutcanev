@@ -33,17 +33,11 @@ RUN  echo 'deb http://cloud.r-project.org/bin/linux/debian jessie-cran3/' >> /et
  && echo 'deb http://cran.rstudio.com/bin/linux/debian jessie-cran3/' >> /etc/apt/sources.list \
  && apt-key adv --keyserver keys.gnupg.net --recv-key 381BA480 \
  && apt-get update \
- && apt-get install -y --no-install-recommends r-base r-base-dev \
+ && apt-get install -y --no-install-recommends r-base r-base-dev libpq-dev  \
  && echo 'options(repos = c(CRAN = "https://cran.rstudio.com/"), download.file.method = "libcurl")' >> /etc/R/Rprofile.site \ 
  && Rscript -e 'install.packages("SortableHTMLTables",dependencies=TRUE, clean=TRUE) ' \
  && Rscript -e 'install.packages("RPostgreSQL",dependencies=TRUE, clean=TRUE) ' \
  && Rscript -e 'install.packages("gtools",dependencies=TRUE, clean=TRUE) ' \
- && Rscript -e 'install.packages("rgeos" ,dependencies=TRUE, clean=TRUE) ' \
- && Rscript -e 'install.packages("sp"  ,dependencies=TRUE, clean=TRUE) ' \
- && Rscript -e 'install.packages("rgdal",dependencies=TRUE, clean=TRUE) ' \
- && Rscript -e 'install.packages("lattice",dependencies=TRUE, clean=TRUE) ' \
- && Rscript -e 'install.packages("ggplot2",dependencies=TRUE, clean=TRUE) ' \
- && Rscript -e 'install.packages("RColorBrewer",dependencies=TRUE, clean=TRUE) ' \
  && apt-get purge -f -y g++ \
                             gcc \
                             gfortran \                        
@@ -55,4 +49,3 @@ RUN  echo 'deb http://cloud.r-project.org/bin/linux/debian jessie-cran3/' >> /et
  && apt-get clean \
  && rm -rf /tmp/* /var/tmp/* \
  && rm -rf /var/lib/apt/lists/* 
-

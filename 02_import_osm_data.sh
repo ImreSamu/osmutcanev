@@ -9,16 +9,17 @@ mkdir -p ./inputosmdata
 mkdir -p ./inputosmadmin
 
 
-if  ! pg_isready  
+if  ! pg_isready
 then
   echo "Start -> PostgreSQL" 
   nohup /docker-entrypoint.sh postgres  &
+  sleep 20
 else
   echo "PostgreSQL is running"  
 fi
 
 
-while ! pg_isready 
+while ! pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
 do
     echo "$(date) - waiting for PG database to start"
     sleep 2
@@ -62,11 +63,7 @@ function import_osmdata {
  done
 }
 import_osmdata
-psql -d ${POSTGRES_DB} -U ${POSTGRES_USER}  -f preprocess.sql
-
-exit
 
 
-psql -d ${POSTGRES_DB} -U ${POSTGRES_USER}  -f compare.sql
 
 

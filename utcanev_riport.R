@@ -11,7 +11,7 @@ library(gtools)
 drv <- dbDriver("PostgreSQL")
 
 ## Open a connection
-con <- dbConnect(drv, dbname="osm" )
+con <- dbConnect(drv, dbname="osm" , user="osm")
 
 ## Submits a statement
 
@@ -39,10 +39,7 @@ mtelepules <- function (nev ) {
   sortable.html.table(rs, htmlfile , 'sandbox', nev )
 } 
 
-
-
 apply( rtelepules,1, mtelepules) 
-
 
 
 ##  HASONLÓ
@@ -60,8 +57,6 @@ s<- "select
                     "
 rs <- dbGetQuery(con, s )  
 sortable.html.table(rs, '00_HASONLÓ.html' , 'sandbox', '00_HASONLÓ de nem pontosan ugyanaz' )
-
-
 
 
 ##  HASONLÓ
@@ -96,9 +91,6 @@ s<- "select
 rs <- dbGetQuery(con, s )  
 sortable.html.table(rs, '00_NINCS_HASONLO_OSM.html' , 'sandbox', '00_NINCS_HASONLO_OSM,  nincs OSM párja' )
 
-
-
-
 ##   par_telep_utca_percent
 s<- "select 
                        telepules as település
@@ -113,14 +105,6 @@ s<- "select
 rs <- dbGetQuery(con, s )  
 sortable.html.table(rs, '00_TELEPÜLÉS_LFEDETTSÉG.html' , 'sandbox'
                       , '00_TELEPÜLÉS_LFEDETTSÉG - OSM utcanevek lefedettsége a Választási utcanevek alapján' )
-
-
-
-
-
-## mtelepules('Békés')
-## mtelepules('Murony')
-
 
 ## Closes the connection
 dbDisconnect(con)

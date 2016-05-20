@@ -84,7 +84,6 @@ select telepules
       ,count(*)      as osm_line_count
 from 
 (
-t
 SELECT 
         city.name      as telepules 
        ,pline.name     as utcanev
@@ -95,9 +94,7 @@ SELECT
 FROM hun_city            AS city
 JOIN osm_addressname     AS pline
 ON   st_intersects (city.geometry, pline.geometry ) 
-
 ) t
-
 GROUP BY telepules,utcanev,utcanev_t,alt_name
 ORDER BY telepules,utcanev,utcanev_t,alt_name
 ;
