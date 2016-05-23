@@ -1,17 +1,15 @@
-﻿
-
-
-
-
-
-
-DROP TABLE IF EXISTS valasztasi_telep_utca;
+﻿---
+---
+---
+---
+;;;;;
+DROP TABLE IF EXISTS valasztasi_telep_utca CASCADE;
 create table valasztasi_telep_utca
-   as 
+   as
              select telepules, utcanev, UTCANEV_TISZTIT(utcanev) as utcanev_t ,''::text as alt_name from bazis_budapest
    union all select telepules, utcanev, UTCANEV_TISZTIT(utcanev) as utcanev_t ,''::text as alt_name from bazis_videk
 ;
-
+---
 CREATE INDEX  valasztasi_telep_utca_telepules    ON valasztasi_telep_utca (telepules);
 CREATE INDEX  valasztasi_telep_utca_trgm_idxt_t  ON valasztasi_telep_utca     USING gist (telepules  , utcanev_t   gist_trgm_ops);
 CREATE INDEX  valasztasi_telep_utca_trgm_idxt_a  ON valasztasi_telep_utca     USING gist (telepules  , alt_name    gist_trgm_ops);
@@ -19,10 +17,8 @@ ANALYZE  valasztasi_telep_utca;
 
 -- 
 
-
 Drop table IF EXISTS par_telep_utca_simil;
 Create         table par_telep_utca_simil as
-
 -- explain
  select * from
 (
@@ -36,7 +32,7 @@ SELECT
      , similarity ( o.utcanev_t ,v.utcanev_t ) as  t_similarity
      , similarity ( o.alt_name  ,v.utcanev )   as  o_similarity_alt_name
 FROM osm_telep_utca  as o  INNER JOIN  valasztasi_telep_utca  as v
-on  
+on
       o.telepules =  v.telepules
  and
       ( o.utcanev_t %  v.utcanev_t ) 
@@ -81,10 +77,6 @@ CREATE INDEX par_telep_sf_o_utcanev   ON par_telep_utca_simil_f USING gist (o_ut
 CREATE INDEX par_telep_sf_v_utcanev   ON par_telep_utca_simil_f USING gist (v_utcanev );
 
 
-
-
-
-
 Drop table IF EXISTS par_telep_utca_all;
 Create         table par_telep_utca_all
  as
@@ -117,8 +109,6 @@ where not exists ( select * from par_telep_utca_simil_f f
                    where f.telepules=o.telepules and f.o_utcanev=o.utcanev 
                    )  
 
-
-
 UNION ALL 
 
 select telepules
@@ -135,8 +125,6 @@ where not exists ( select * from par_telep_utca_simil_f f
                    where f.telepules=v.telepules and f.v_utcanev=v.utcanev 
                    )           
                      
-
-
 ) qqq
 order by  telepules  , utcanev , v_utcanev , o_utcanev
 ;
@@ -191,8 +179,6 @@ select
   , _db_nincs_hasonlo_osm 
   , _db_valasztasi   
   , _db_nincs_hasonlo_val
-
-
 FROM
 (
 SELECT
@@ -212,7 +198,7 @@ order by OSM_allapot_szazalek desc
 ;
 
 
-
+--------------------------------------------------
 Drop table IF EXISTS hun_stat_percent;
 Create table         hun_stat_percent  as
 select * 
@@ -224,4 +210,40 @@ select sum(_db_egyezo)     as db_egyezo
       ,sum(_db_valasztasi) as db_valasztasi 
   from par_telep_utca_percent
 ) p
+;
+
+
+-------------------------------------------------
+Drop table IF EXISTS hun_city_percent;
+Create         table hun_city_percent as
+SELECT 
+ ROW_NUMBER()  OVER (ORDER BY name  ASC) as gid 
+,name
+,COALESCE(OSM_allapot_szazalek,0)  as OSM_allapot_szazalek
+,COALESCE(db_egyezo,0)             as db_egyezo 
+,COALESCE(db_hasonlo,0)            as db_hasonlo
+,COALESCE(db_nincs_hasonlo_osm,0)  as db_nincs_hasonlo_osm 
+,COALESCE(db_valasztasi,0)         as db_valasztasi
+,COALESCE(db_nincs_hasonlo_val,0)  as db_nincs_hasonlo_val
+--,wkt_geometry  
+,wkb_geometry 
+from (
+
+select
+ name
+,percent.OSM_allapot_szazalek  as OSM_allapot_szazalek
+,percent._db_egyezo            as db_egyezo
+,percent._db_hasonlo           as db_hasonlo
+,percent._db_nincs_hasonlo_osm as db_nincs_hasonlo_osm
+,percent._db_valasztasi        as db_valasztasi
+,percent._db_nincs_hasonlo_val as db_nincs_hasonlo_val
+-- ,ST_AsText(st_transform(st_simplifyPreserveTopology(geometry ,50),4326))   as wkt_geometry  
+,ST_Transform(  ST_RemoveRepeatedPoints( ST_SimplifyPreserveTopology(city.geometry,50),50) , 4326 )  as wkb_geometry
+
+FROM  hun_city               as city
+LEFT JOIN par_telep_utca_percent as percent ON city.name=percent.telepules
+
+) as pp
+ORDER BY name;
+
 

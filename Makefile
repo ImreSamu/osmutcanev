@@ -1,19 +1,31 @@
-
-makefile_dir := $(abspath $(shell pwd))
-
 .PHONY: all
 
-all: build
+all: build start startweb
 
 build:
-	docker build -t imresamu/osmutcanev   .
+	docker-compose build
 
 start:
-	docker run  --rm --name osmutcanev -it -v $(makefile_dir):/src imresamu/osmutcanev /src/start.sh
+	docker-compose up -d  db
+	docker-compose run --rm osmutcanev
+	docker-compose stop db
+	docker-compose rm -f -v
+
+download_osmadmin:
+	./src/admin/download_osmadmin.sh
+
+download_osmlatest:
+	./src/admin/download_osmlatest.sh
+
+startweb:
+	docker-compose up -d web
 
 startdev:
-	docker run  --rm --name osmutcanev -it -v $(makefile_dir):/src imresamu/osmutcanev /bin/bash
+	docker-compose run --rm osmutcanev /bin/bash
 
-exec:
-	docker exec --name osmutcanev -it  /bin/bash
+down:
+	docker-compose down
+
+clean:
+	docker-compose rm -f -v
 

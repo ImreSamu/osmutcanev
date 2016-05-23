@@ -1,11 +1,8 @@
 # Data files
-inputosmadmin/
-inputosmdata/
-sandbox/
-log/
+output/web/pics
+output/web/reports
 
 # temp files
 *.out
-*.Rout
-.RData
-sandbox/osm_utcanev_export.xlsx
+*.Rdata
+

@@ -1,0 +1,9 @@
+sudo: required
+language: bash
+services:
+  - docker
+before_install:
+  - make build
+script:
+  - make start
+

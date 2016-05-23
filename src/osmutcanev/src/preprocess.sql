@@ -1,7 +1,14 @@
-﻿
-CREATE EXTENSION IF NOT EXISTS fuzzystrmatch ;
-CREATE EXTENSION IF NOT EXISTS pg_trgm ;
+--  
+--
+--
+--
+--
+--
+delete  from osm_addressname where name ='';
+--  Preprocess SQL;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE EXTENSION IF NOT EXISTS btree_gist;
+CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
 SELECT set_limit(0.36);
 
 --
@@ -16,7 +23,7 @@ BEGIN
 END ;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
-delete  from osm_addressname where name ='';
+
 
 -- ALTER TABLE hun_city CLUSTER ON hun_city_geom_geohash;
 

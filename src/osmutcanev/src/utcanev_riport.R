@@ -7,14 +7,17 @@ library(RPostgreSQL)
 library(SortableHTMLTables)
 library(gtools)
 
+exportdirtelepules     <- "./output/web/reports/telepulesek/"
+exportdir              <- "./output/web/reports/"
+
+
 ## loads the PostgreSQL driver
 drv <- dbDriver("PostgreSQL")
 
 ## Open a connection
-con <- dbConnect(drv, dbname="osm" , user="osm")
+con <- dbConnect(drv)
 
-## Submits a statement
-
+## Telepulesk reports
 rtelepules <- dbGetQuery(con, "select 
                        distinct telepules 
                        from par_telep_utca_all
@@ -36,7 +39,7 @@ mtelepules <- function (nev ) {
                     order by telepules, utcanev 
                     ",  nev )
   rs <- dbGetQuery(con, s )  
-  sortable.html.table(rs, htmlfile , 'sandbox', nev )
+  sortable.html.table(rs, htmlfile , exportdirtelepules,  nev )
 } 
 
 apply( rtelepules,1, mtelepules) 
@@ -44,19 +47,19 @@ apply( rtelepules,1, mtelepules)
 
 ##  HASONLÓ
 
-s<- "select 
-                       telepules as település
-                     , utcanev   as képzett_utcanév
-                     , v_utcanev as választási_utcanév
-                     , o_utcanev as OpenStreetMap_utcanév 
-                     , checktype as Párosítás_típusa
-                     , o_utcanev_alt_name as OpenStreetMap_alt_name
-                    from par_telep_utca_all
-                    WHERE  checktype like 'HASON%'
-                    order by telepules, utcanev 
+s<- "               SELECT
+                       telepules AS település
+                     , utcanev   AS képzett_utcanév
+                     , v_utcanev AS választási_utcanév
+                     , o_utcanev AS OpenStreetMap_utcanév 
+                     , checktype AS Párosítás_típusa
+                     , o_utcanev_alt_name AS OpenStreetMap_alt_name
+                    FROM par_telep_utca_all
+                    WHERE  checktype LIKE 'HASON%'
+                    ORDER BY telepules, utcanev 
                     "
 rs <- dbGetQuery(con, s )  
-sortable.html.table(rs, '00_HASONLÓ.html' , 'sandbox', '00_HASONLÓ de nem pontosan ugyanaz' )
+sortable.html.table(rs, '00_HASONLÓ.html' , exportdir, '00_HASONLÓ de nem pontosan ugyanaz' )
 
 
 ##  HASONLÓ
@@ -73,7 +76,7 @@ s<- "select
                     order by telepules, utcanev 
                     "
 rs <- dbGetQuery(con, s )  
-sortable.html.table(rs, '00_HASONLÓ2.html' , 'sandbox', '00_HASONLÓ de nem pontosan ugyanaz' )
+sortable.html.table(rs, '00_HASONLÓ2.html' , exportdir, '00_HASONLÓ de nem pontosan ugyanaz' )
 
 
 
@@ -89,7 +92,7 @@ s<- "select
                     order by telepules, utcanev 
                     "
 rs <- dbGetQuery(con, s )  
-sortable.html.table(rs, '00_NINCS_HASONLO_OSM.html' , 'sandbox', '00_NINCS_HASONLO_OSM,  nincs OSM párja' )
+sortable.html.table(rs, '00_NINCS_HASONLO_OSM.html' , exportdir, '00_NINCS_HASONLO_OSM,  nincs OSM párja' )
 
 ##   par_telep_utca_percent
 s<- "select 
@@ -103,7 +106,7 @@ s<- "select
 
                     "
 rs <- dbGetQuery(con, s )  
-sortable.html.table(rs, '00_TELEPÜLÉS_LFEDETTSÉG.html' , 'sandbox'
+sortable.html.table(rs, '00_TELEPÜLÉS_LFEDETTSÉG.html' , exportdir
                       , '00_TELEPÜLÉS_LFEDETTSÉG - OSM utcanevek lefedettsége a Választási utcanevek alapján' )
 
 ## Closes the connection
