@@ -12,10 +12,10 @@ start:
 	docker-compose rm -f -v
 
 download_osmadmin:
-	./src/admin/download_osmadmin.sh
+	./download_osmadmin.sh
 
 download_osmlatest:
-	./src/admin/download_osmlatest.sh
+	./download_osmlatest.sh
 
 startweb:
 	docker-compose up -d web

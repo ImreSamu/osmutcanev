@@ -36,10 +36,10 @@ services:
      - BASENAME=Posta
      - BASENAMELONG=Posta_adatbázis
   
-  web:
-    image: "abiosoft/caddy"
-    ports:
-     - "2015:2015"
-    volumes:
-     - ./output/web:/srv
+#  web:
+#    image: "abiosoft/caddy"
+#    ports:
+#     - "2015:2015"
+#    volumes:
+#     - ./output/web:/srv
 
