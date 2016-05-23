@@ -1,4 +1,5 @@
-# osmutcanev
+#  OSMutcanev [![Build Status](https://travis-ci.org/ImreSamu/osmutcanev.svg?branch=master)](https://travis-ci.org/ImreSamu/osmutcanev) 
+
 OSM HUN Streetname compare
 
 Work in progress ....
