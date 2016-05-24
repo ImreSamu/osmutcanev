@@ -20,6 +20,7 @@ before_install:
  
 script:
   - docker-compose config
+  - ./download_osmlatest.sh
   - make build
   - make start
   
