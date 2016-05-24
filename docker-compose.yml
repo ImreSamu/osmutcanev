@@ -28,18 +28,20 @@ services:
      - ./src/osmutcanev/src:/osm/src                
     links:
      - db:db
-    environment:     
+    environment:
+     - PGHOST=db         
      - PGUSER=osm
-     - PGHOST=db
      - PGDATABASE=osm
      - PGPASSWORD=osm
      - BASENAME=Posta
      - BASENAMELONG=Posta_adatbázis
-  
-#  web:
-#    image: "abiosoft/caddy"
-#    ports:
-#     - "2015:2015"
-#    volumes:
-#     - ./output/web:/srv
+     - MAPLABEL1="OpenStreetMap Hungary vs. Hungarian Post  -  Street Name Completeness Statistics "
+     - MAPLABEL2="---  Experimental!  ---"
+ 
+  web:
+    image: "abiosoft/caddy"
+    ports:
+     - "2015:2015"
+    volumes:
+     - ./output/web:/srv
 

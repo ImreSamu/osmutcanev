@@ -9,7 +9,7 @@ start:
 	docker-compose up -d  db
 	docker-compose run --rm osmutcanev
 	docker-compose stop db
-	docker-compose rm -f -v
+	docker-compose rm -a -f -v
 
 download_osmadmin:
 	./download_osmadmin.sh
@@ -27,5 +27,5 @@ down:
 	docker-compose down
 
 clean:
-	docker-compose rm -f -v
+	docker-compose rm -a -f -v
 

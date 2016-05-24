@@ -12,8 +12,12 @@ library(grid)
 library(ggplot2)
 
 pngname    <- "./output/web/pics/osmhu_streetname_latest.png"
-maplabel1  <- "OpenStreetMap Hungary - Street Name Completeness Statistics "
-maplabel2  <- "Experimental! "
+
+#maplabel1  <- "OpenStreetMap Hungary - Street Name Completeness Statistics "
+#maplabel2  <- "Experimental! "
+
+maplabel1 <- Sys.getenv("MAPLABEL1") 
+maplabel2 <- Sys.getenv("MAPLABEL2")
 
 con <- dbConnect(PostgreSQL())
 

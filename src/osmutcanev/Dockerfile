@@ -66,6 +66,11 @@ RUN echo 'deb http://cloud.r-project.org/bin/linux/debian jessie-cran3/'  >> /et
  && rm -rf /tmp/* /var/tmp/* \
  && rm -rf /var/lib/apt/lists/* 
 
+
+# Map labels
+ENV MAPLABEL1 env_maplabel1_unset
+ENV MAPLABEL2 env_maplabel2_unset
+
 # project files
 COPY ./src       /osm/src
 COPY ./start.sh  /osm/start.sh  
