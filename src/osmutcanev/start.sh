@@ -19,8 +19,13 @@ function dataprocess {
  time psql  -f "./src/preprocess.sql"
  echo ' --- BASE DATA IMPORT start --- ' 
  time ./src/import_bazisutcanev.sh
- echo ' --- OSM and BASE COMPARE start --- ' 
- time psql  -f "./src/compare.sql"
+ echo ' --- OSM and BASE COMPARE start --- '
+ 
+ cat "./src/compare.sql" |  sed -e "s/NINCS_HASONLO_BAZ/NINCS_HASONLO_${BASENAME}/g" >   ./src/compare_temp.sql
+  
+ time psql  -f "./src/compare_temp.sql"
+ 
+ 
 }
 
 dataprocess

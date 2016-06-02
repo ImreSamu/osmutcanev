@@ -34,7 +34,6 @@ services:
      - PGDATABASE=osm
      - PGPASSWORD=osm
      - BASENAME=Posta
-     - BASENAMELONG=Posta_adatbázis
      - MAPLABEL1="OpenStreetMap Hungary vs. Hungarian Post  -  Street Name Completeness Statistics "
      - MAPLABEL2="---  Experimental!  ---"
  

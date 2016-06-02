@@ -3,17 +3,17 @@
 ---
 ---
 ;;;;;
-DROP TABLE IF EXISTS valasztasi_telep_utca CASCADE;
-create table valasztasi_telep_utca
+DROP TABLE IF EXISTS bazis_telep_utca CASCADE;
+create table bazis_telep_utca
    as
              select telepules, utcanev, UTCANEV_TISZTIT(utcanev) as utcanev_t ,''::text as alt_name from bazis_budapest
    union all select telepules, utcanev, UTCANEV_TISZTIT(utcanev) as utcanev_t ,''::text as alt_name from bazis_videk
 ;
 ---
-CREATE INDEX  valasztasi_telep_utca_telepules    ON valasztasi_telep_utca (telepules);
-CREATE INDEX  valasztasi_telep_utca_trgm_idxt_t  ON valasztasi_telep_utca     USING gist (telepules  , utcanev_t   gist_trgm_ops);
-CREATE INDEX  valasztasi_telep_utca_trgm_idxt_a  ON valasztasi_telep_utca     USING gist (telepules  , alt_name    gist_trgm_ops);
-ANALYZE  valasztasi_telep_utca;
+CREATE INDEX  bazis_telep_utca_telepules    ON bazis_telep_utca (telepules);
+CREATE INDEX  bazis_telep_utca_trgm_idxt_t  ON bazis_telep_utca     USING gist (telepules  , utcanev_t   gist_trgm_ops);
+CREATE INDEX  bazis_telep_utca_trgm_idxt_a  ON bazis_telep_utca     USING gist (telepules  , alt_name    gist_trgm_ops);
+ANALYZE  bazis_telep_utca;
 
 -- 
 
@@ -23,36 +23,36 @@ Create         table par_telep_utca_simil as
  select * from
 (
 SELECT 
-       COALESCE(v.telepules ,o.telepules )     as telepules 
-     , COALESCE(v.utcanev   ,o.utcanev   )     as utcanev  
-     , v.utcanev              as v_utcanev 
+       COALESCE(b.telepules ,o.telepules )     as telepules 
+     , COALESCE(b.utcanev   ,o.utcanev   )     as utcanev  
+     , b.utcanev              as b_utcanev 
      , o.utcanev              as o_utcanev 
      , o.alt_name             as o_utcanev_alt_name 
-     , similarity ( o.utcanev   ,v.utcanev )   as  o_similarity
-     , similarity ( o.utcanev_t ,v.utcanev_t ) as  t_similarity
-     , similarity ( o.alt_name  ,v.utcanev )   as  o_similarity_alt_name
-FROM osm_telep_utca  as o  INNER JOIN  valasztasi_telep_utca  as v
+     , similarity ( o.utcanev   ,b.utcanev )   as  o_similarity
+     , similarity ( o.utcanev_t ,b.utcanev_t ) as  t_similarity
+     , similarity ( o.alt_name  ,b.utcanev )   as  o_similarity_alt_name
+FROM osm_telep_utca  as o  INNER JOIN  bazis_telep_utca  as b
 on
-      o.telepules =  v.telepules
+      o.telepules =  b.telepules
  and
-      ( o.utcanev_t %  v.utcanev_t ) 
+      ( o.utcanev_t %  b.utcanev_t ) 
 
 union all
 
 SELECT 
-       COALESCE(v.telepules ,o.telepules )     as telepules 
-     , COALESCE(v.utcanev   ,o.utcanev   )     as utcanev  
-     , v.utcanev              as v_utcanev 
+       COALESCE(b.telepules ,o.telepules )     as telepules 
+     , COALESCE(b.utcanev   ,o.utcanev   )     as utcanev  
+     , b.utcanev              as b_utcanev 
      , o.utcanev              as o_utcanev 
      , o.alt_name             as o_utcanev_alt_name 
-     , similarity ( o.utcanev   ,v.utcanev )   as  o_similarity
-     , similarity ( o.utcanev_t ,v.utcanev_t ) as  t_similarity
-     , similarity ( o.alt_name  ,v.utcanev )   as  o_similarity_alt_name
-FROM osm_telep_utca  as o  INNER JOIN  valasztasi_telep_utca  as v
+     , similarity ( o.utcanev   ,b.utcanev )   as  o_similarity
+     , similarity ( o.utcanev_t ,b.utcanev_t ) as  t_similarity
+     , similarity ( o.alt_name  ,b.utcanev )   as  o_similarity_alt_name
+FROM osm_telep_utca  as o  INNER JOIN  bazis_telep_utca  as b
 on  
-      o.telepules =  v.telepules
+      o.telepules =  b.telepules
  and  o.alt_name  <> ''    
- and  ( o.alt_name   %  v.utcanev  )
+ and  ( o.alt_name   %  b.utcanev  )
 ) p
 ORDER BY telepules , utcanev    
 ;
@@ -74,7 +74,7 @@ select distinct on (telepules, utcanev)
  ;
  
 CREATE INDEX par_telep_sf_o_utcanev   ON par_telep_utca_simil_f USING gist (o_utcanev );
-CREATE INDEX par_telep_sf_v_utcanev   ON par_telep_utca_simil_f USING gist (v_utcanev );
+CREATE INDEX par_telep_sf_b_utcanev   ON par_telep_utca_simil_f USING gist (b_utcanev );
 
 
 Drop table IF EXISTS par_telep_utca_all;
@@ -83,7 +83,7 @@ Create         table par_telep_utca_all
 select * from 
 (
 
-select telepules,utcanev,v_utcanev,o_utcanev ,o_utcanev_alt_name 
+select telepules,utcanev,b_utcanev,o_utcanev ,o_utcanev_alt_name 
       ,o_similarity,t_similarity, o_similarity_alt_name,
    case when o_similarity = 1          then   'EGYEZŐ'
         when o_similarity_alt_name = 1 then   'EGYEZŐ_ALT_NAME' 
@@ -97,13 +97,13 @@ UNION ALL
 
 select telepules
      , utcanev
-     , ''        as v_utcanev
+     , ''        as b_utcanev
      , utcanev   as o_utcanev
      , alt_name  as o_utcanev_alt_name 
      , 0         as o_similarity
      , 0         as t_similarity
      , 0         as o_similarity_alt_name
-     , 'NINCS_HASONLO_VAL'  as checktype
+     , 'NINCS_HASONLO_BAZ'  as checktype
 from osm_telep_utca o 
 where not exists ( select * from par_telep_utca_simil_f f 
                    where f.telepules=o.telepules and f.o_utcanev=o.utcanev 
@@ -113,20 +113,20 @@ UNION ALL
 
 select telepules
      , utcanev     
-     , utcanev   as v_utcanev
+     , utcanev   as b_utcanev
      , ''        as o_utcanev
      , ''        as o_utcanev_alt_name 
      , 0         as o_similarity
      , 0         as t_similarity
      , 0         as o_similarity_alt_name
      , 'NINCS_HASONLO_OSM'  as checktype
-from valasztasi_telep_utca  v 
+from bazis_telep_utca  b 
 where not exists ( select * from par_telep_utca_simil_f f 
-                   where f.telepules=v.telepules and f.v_utcanev=v.utcanev 
+                   where f.telepules=b.telepules and f.b_utcanev=b.utcanev 
                    )           
                      
 ) qqq
-order by  telepules  , utcanev , v_utcanev , o_utcanev
+order by  telepules  , utcanev , b_utcanev , o_utcanev
 ;
 
 CREATE INDEX par_telep_utca_all_telepules   ON par_telep_utca_all USING gist (telepules,utcanev );
@@ -168,8 +168,8 @@ Create table         par_telep_utca_percent  as
 select 
     telepules 
   , round(
-      case when _db_valasztasi <> 0 
-         then ((_db_egyezo::real+_db_hasonlo::real) / _db_valasztasi::real) * 100
+      case when _db_bazis <> 0 
+         then ((_db_egyezo::real+_db_hasonlo::real) / _db_bazis::real) * 100
          else 0
       end ::numeric
      ,0 ) 
@@ -177,8 +177,8 @@ select
   , _db_egyezo
   , _db_hasonlo
   , _db_nincs_hasonlo_osm 
-  , _db_valasztasi   
-  , _db_nincs_hasonlo_val
+  , _db_bazis   
+  , _db_nincs_hasonlo_baz
 FROM
 (
 SELECT
@@ -186,8 +186,8 @@ SELECT
  , sum((LEFT(checktype,6)='EGYEZŐ')::int)            as _db_egyezo
  , sum((LEFT(checktype,7)='HASONLÓ')::int)           as _db_hasonlo
  , sum((checktype        ='NINCS_HASONLO_OSM')::int) as _db_nincs_hasonlo_osm 
- , sum((checktype       <>'NINCS_HASONLO_VAL')::int) as _db_valasztasi 
- , sum((checktype        ='NINCS_HASONLO_VAL')::int) as _db_nincs_hasonlo_val
+ , sum((checktype       <>'NINCS_HASONLO_BAZ')::int) as _db_bazis 
+ , sum((checktype        ='NINCS_HASONLO_BAZ')::int) as _db_nincs_hasonlo_baz
  , count(*) as _db_all
  
 FROM par_telep_utca_all
@@ -202,12 +202,12 @@ order by OSM_allapot_szazalek desc
 Drop table IF EXISTS hun_stat_percent;
 Create table         hun_stat_percent  as
 select * 
-   , ( db_egyezo + db_hasonlo) / db_valasztasi  as eh_percent
-   , ( db_egyezo   ) / db_valasztasi            as percent
+   , ( db_egyezo + db_hasonlo) / db_bazis  as eh_percent
+   , ( db_egyezo   ) / db_bazis            as percent
 from (
 select sum(_db_egyezo)     as db_egyezo
       ,sum(_db_hasonlo)    as db_hasonlo
-      ,sum(_db_valasztasi) as db_valasztasi 
+      ,sum(_db_bazis)      as db_bazis 
   from par_telep_utca_percent
 ) p
 ;
@@ -223,8 +223,8 @@ SELECT
 ,COALESCE(db_egyezo,0)             as db_egyezo 
 ,COALESCE(db_hasonlo,0)            as db_hasonlo
 ,COALESCE(db_nincs_hasonlo_osm,0)  as db_nincs_hasonlo_osm 
-,COALESCE(db_valasztasi,0)         as db_valasztasi
-,COALESCE(db_nincs_hasonlo_val,0)  as db_nincs_hasonlo_val
+,COALESCE(db_bazis,0)              as db_bazis
+,COALESCE(db_nincs_hasonlo_baz,0)  as db_nincs_hasonlo_baz
 --,wkt_geometry  
 ,wkb_geometry 
 from (
@@ -235,8 +235,8 @@ select
 ,percent._db_egyezo            as db_egyezo
 ,percent._db_hasonlo           as db_hasonlo
 ,percent._db_nincs_hasonlo_osm as db_nincs_hasonlo_osm
-,percent._db_valasztasi        as db_valasztasi
-,percent._db_nincs_hasonlo_val as db_nincs_hasonlo_val
+,percent._db_bazis             as db_bazis
+,percent._db_nincs_hasonlo_baz as db_nincs_hasonlo_baz
 -- ,ST_AsText(st_transform(st_simplifyPreserveTopology(geometry ,50),4326))   as wkt_geometry  
 ,ST_Transform(  ST_RemoveRepeatedPoints( ST_SimplifyPreserveTopology(city.geometry,50),50) , 4326 )  as wkb_geometry
 

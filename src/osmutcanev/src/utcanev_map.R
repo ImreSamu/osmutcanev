@@ -30,8 +30,8 @@ hun_city_percent <- get_postgis_query(con,
      ,db_egyezo
      ,db_hasonlo
      ,db_nincs_hasonlo_osm 
-     ,db_valasztasi   
-     ,db_nincs_hasonlo_val   
+     ,db_bazis   
+     ,db_nincs_hasonlo_baz   
      ,wkb_geometry 
    FROM hun_city_percent",
    geom_name = "wkb_geometry")
@@ -40,10 +40,10 @@ class(hun_city_percent)
 
 hun_stat     = dbGetQuery(con, " 
       SELECT 
-          db_egyezo  / db_valasztasi                             AS equal_percent
-        , db_hasonlo / db_valasztasi                             AS similar_percent
-        , db_valasztasi-db_hasonlo-db_egyezo                     AS db_hianyzo
-        ,(db_valasztasi-db_hasonlo-db_egyezo  )  / db_valasztasi AS missing_percent
+          db_egyezo  / db_bazis                             AS equal_percent
+        , db_hasonlo / db_bazis                             AS similar_percent
+        , db_bazis-db_hasonlo-db_egyezo                     AS db_hianyzo
+        ,(db_bazis-db_hasonlo-db_egyezo  )  / db_bazis      AS missing_percent
         , * 
       FROM hun_stat_percent;
      ")

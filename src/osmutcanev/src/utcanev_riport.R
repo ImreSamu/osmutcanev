@@ -7,6 +7,9 @@ library(RPostgreSQL)
 library(SortableHTMLTables)
 library(gtools)
 
+basename     <- Sys.getenv("BASENAME") 
+print ( c("basename=",basename) )
+
 exportdirtelepules     <- "./output/web/reports/telepulesek/"
 exportdir              <- "./output/web/reports/"
 
@@ -30,7 +33,7 @@ mtelepules <- function (nev ) {
   s<-sprintf("select 
                        telepules as Település
                      , utcanev   as Képzett_utcanév
-                     , v_utcanev as Választási_utcanév
+                     , b_utcanev as Bázis_utcanév
                      , o_utcanev as OpenStreetMap_utcanév 
                      , checktype as Párosítás_típusa
                      , o_utcanev_alt_name as OpenStreetMap_alt_name 
@@ -38,6 +41,8 @@ mtelepules <- function (nev ) {
                     WHERE  telepules = '%s'
                     order by telepules, utcanev 
                     ",  nev )
+  s <- gsub("Bázis",basename,s)
+                    
   rs <- dbGetQuery(con, s )  
   sortable.html.table(rs, htmlfile , exportdirtelepules,  nev )
 } 
@@ -50,7 +55,7 @@ apply( rtelepules,1, mtelepules)
 s<- "               SELECT
                        telepules AS település
                      , utcanev   AS képzett_utcanév
-                     , v_utcanev AS választási_utcanév
+                     , b_utcanev AS Bázis_utcanév
                      , o_utcanev AS OpenStreetMap_utcanév 
                      , checktype AS Párosítás_típusa
                      , o_utcanev_alt_name AS OpenStreetMap_alt_name
@@ -58,6 +63,7 @@ s<- "               SELECT
                     WHERE  checktype LIKE 'HASON%'
                     ORDER BY telepules, utcanev 
                     "
+s <- gsub("Bázis",basename,s)                    
 rs <- dbGetQuery(con, s )  
 sortable.html.table(rs, '00_HASONLÓ.html' , exportdir, '00_HASONLÓ de nem pontosan ugyanaz' )
 
@@ -67,7 +73,7 @@ sortable.html.table(rs, '00_HASONLÓ.html' , exportdir, '00_HASONLÓ de nem pont
 s<- "select 
                        telepules as település
                      , utcanev   as képzett_utcanév
-                     , v_utcanev as választási_utcanév
+                     , b_utcanev as Bázis_utcanév
                      , o_utcanev as OpenStreetMap_utcanév 
                      , checktype as Párosítás_típusa
                      , o_utcanev_alt_name as OpenStreetMap_alt_name
@@ -75,6 +81,7 @@ s<- "select
                     WHERE  checktype like 'HASON%'
                     order by telepules, utcanev 
                     "
+  s <- gsub("Bázis",basename,s)                    
 rs <- dbGetQuery(con, s )  
 sortable.html.table(rs, '00_HASONLÓ2.html' , exportdir, '00_HASONLÓ de nem pontosan ugyanaz' )
 
@@ -84,13 +91,15 @@ sortable.html.table(rs, '00_HASONLÓ2.html' , exportdir, '00_HASONLÓ de nem pon
 s<- "select 
                        telepules as település
                      , utcanev   as képzett_utcanév
-                     , v_utcanev as választási_utcanév
+                     , b_utcanev as Bázis_utcanév
                      , o_utcanev as OpenStreetMap_utcanév 
                      , checktype as Párosítás_típusa
                     from   par_telep_utca_all
                     WHERE  checktype = 'NINCS_HASONLO_OSM'
                     order by telepules, utcanev 
                     "
+s <- gsub("Bázis",basename,s)
+                    
 rs <- dbGetQuery(con, s )  
 sortable.html.table(rs, '00_NINCS_HASONLO_OSM.html' , exportdir, '00_NINCS_HASONLO_OSM,  nincs OSM párja' )
 
@@ -103,11 +112,12 @@ s<- "select
                      , _db_nincs_hasonlo_osm   as OSM_ből_hiányzó_utcanév_db
                     from   par_telep_utca_percent
                     order by OSM_allapot_szazalek desc
-
                     "
+s <- gsub("Bázis",basename,s)
+                    
 rs <- dbGetQuery(con, s )  
 sortable.html.table(rs, '00_TELEPÜLÉS_LFEDETTSÉG.html' , exportdir
-                      , '00_TELEPÜLÉS_LFEDETTSÉG - OSM utcanevek lefedettsége a Választási utcanevek alapján' )
+                      ,  gsub("Bázis",basename, '00_TELEPÜLÉS_LFEDETTSÉG - OSM utcanevek lefedettsége a Bázis utcanevek alapján' ))
 
 ## Closes the connection
 dbDisconnect(con)
