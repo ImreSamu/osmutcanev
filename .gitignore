@@ -1,8 +1,15 @@
 # Data files
 output/web/pics
 output/web/reports
+output/web/reports2
+output/web/ajax
+output/log/
+src/osmutcanev/src/compare_temp.sql
 
+posta/*
+__others/*
 # temp files
 *.out
 *.Rdata
+*.Rlog
 

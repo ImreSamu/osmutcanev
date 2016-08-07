@@ -23,6 +23,29 @@ BEGIN
 END ;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
+--  imposm3 'use_single_id_space' id   to   short notations  
+CREATE OR REPLACE FUNCTION imposmid2shortid (id BIGINT ) RETURNS text AS $$
+BEGIN
+ RETURN CASE
+   WHEN  (id >=     0 )               THEN 'n'|| id::text
+   WHEN  (id >= -1e17 ) AND (id < 0 ) THEN 'w'|| (abs(id))::text   
+   WHEN  (id <  -1e17 )               THEN 'r'|| (abs(id) -1e17)::text   
+   ELSE 'error'||id::text
+  END;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+--  imposm3 'use_single_id_space' id   to   osm URL 
+CREATE OR REPLACE FUNCTION imposmid2weburl (id BIGINT ) RETURNS text AS $$
+BEGIN
+ RETURN CASE
+   WHEN  (id >=     0 )               THEN format('<a href="http://www.osm.org/node/%1$s">n%1$s</a>'     , id::text )
+   WHEN  (id >= -1e17 ) AND (id < 0 ) THEN format('<a href="http://www.osm.org/way/%1$s">w%1$s</a>'      , (abs(id))::text )   
+   WHEN  (id <  -1e17 )               THEN format('<a href="http://www.osm.org/relation/%1$s">r%1$s</a>' , (abs(id) -1e17)::text )  
+   ELSE 'error_url'||id::text
+  END;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
 
 
 -- ALTER TABLE hun_city CLUSTER ON hun_city_geom_geohash;
@@ -86,6 +109,8 @@ select telepules
       ,UTCANEV_TISZTIT(utcanev) as utcanev_t
       ,alt_name
       ,array_agg(osm_id) as arri_osm_id
+      ,array_to_string( array_agg( imposmid2shortid( osm_id) ) ,',' )    as arri_shortid
+      ,array_to_string( array_agg( imposmid2weburl( osm_id) )  ,',' )    as arri_osm_id_url
       ,array_agg(         osmkey||'_'||osmvalue) as arri_osmkey
       ,array_agg(distinct osmkey||'_'||osmvalue) as arrd_osmkey
       ,count(*)      as osm_line_count

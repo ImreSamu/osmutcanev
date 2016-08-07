@@ -30,6 +30,8 @@ function dataprocess {
 
 dataprocess
 
+echo ' --- EXPORT reports2  --- ' 
+time ./src/reports2.sh
 
 echo ' ---Export XLS start --- ' 
 rm -f ./output/web/reports/osm_utcanev_export.xlsx

@@ -2,6 +2,7 @@
 ---
 ---
 ---
+\set ON_ERROR_STOP 1
 ;;;;;
 DROP TABLE IF EXISTS bazis_telep_utca CASCADE;
 create table bazis_telep_utca
@@ -31,6 +32,8 @@ SELECT
      , similarity ( o.utcanev   ,b.utcanev )   as  o_similarity
      , similarity ( o.utcanev_t ,b.utcanev_t ) as  t_similarity
      , similarity ( o.alt_name  ,b.utcanev )   as  o_similarity_alt_name
+     , o.arri_shortid         as o_arri_shortid
+     , o.arri_osm_id_url      as o_arri_osm_id_url
 FROM osm_telep_utca  as o  INNER JOIN  bazis_telep_utca  as b
 on
       o.telepules =  b.telepules
@@ -48,6 +51,8 @@ SELECT
      , similarity ( o.utcanev   ,b.utcanev )   as  o_similarity
      , similarity ( o.utcanev_t ,b.utcanev_t ) as  t_similarity
      , similarity ( o.alt_name  ,b.utcanev )   as  o_similarity_alt_name
+     , o.arri_shortid         as o_arri_shortid
+     , o.arri_osm_id_url      as o_arri_osm_id_url     
 FROM osm_telep_utca  as o  INNER JOIN  bazis_telep_utca  as b
 on  
       o.telepules =  b.telepules
@@ -84,8 +89,9 @@ select * from
 (
 
 select telepules,utcanev,b_utcanev,o_utcanev ,o_utcanev_alt_name 
-      ,o_similarity,t_similarity, o_similarity_alt_name,
-   case when o_similarity = 1          then   'EGYEZŐ'
+      ,o_similarity,t_similarity, o_similarity_alt_name
+      ,o_arri_shortid,o_arri_osm_id_url
+   ,case when o_similarity = 1         then   'EGYEZŐ'
         when o_similarity_alt_name = 1 then   'EGYEZŐ_ALT_NAME' 
         when o_similarity_alt_name > greatest(o_similarity,t_similarity) 
             then 'HASONLÓ_ALT_NAME'||to_char( o_similarity_alt_name  *10,'S00')||'p' 
@@ -103,6 +109,8 @@ select telepules
      , 0         as o_similarity
      , 0         as t_similarity
      , 0         as o_similarity_alt_name
+     , o.arri_shortid         as o_arri_shortid
+     , o.arri_osm_id_url      as o_arri_osm_id_url     
      , 'NINCS_HASONLO_BAZ'  as checktype
 from osm_telep_utca o 
 where not exists ( select * from par_telep_utca_simil_f f 
@@ -119,6 +127,8 @@ select telepules
      , 0         as o_similarity
      , 0         as t_similarity
      , 0         as o_similarity_alt_name
+     , ''        as o_arri_shortid
+     , ''        as o_arri_osm_id_url        
      , 'NINCS_HASONLO_OSM'  as checktype
 from bazis_telep_utca  b 
 where not exists ( select * from par_telep_utca_simil_f f 
