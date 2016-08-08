@@ -5,6 +5,7 @@ output/web/reports2
 output/web/ajax
 output/log/
 src/osmutcanev/src/compare_temp.sql
+input/osmdata/hungary-latest.*
 
 posta/*
 __others/*

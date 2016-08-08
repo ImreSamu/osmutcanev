@@ -66,6 +66,12 @@ RUN echo 'deb http://cloud.r-project.org/bin/linux/debian jessie-cran3/'  >> /et
  && rm -rf /tmp/* /var/tmp/* \
  && rm -rf /var/lib/apt/lists/* 
 
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+   osmium osmctools\
+ && apt-get clean \
+ && rm -rf /tmp/* /var/tmp/* \
+ && rm -rf /var/lib/apt/lists/* 
 
 # Map labels
 ENV MAPLABEL1 env_maplabel1_unset
