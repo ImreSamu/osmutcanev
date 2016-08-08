@@ -66,9 +66,11 @@ RUN echo 'deb http://cloud.r-project.org/bin/linux/debian jessie-cran3/'  >> /et
  && rm -rf /tmp/* /var/tmp/* \
  && rm -rf /var/lib/apt/lists/* 
 
-RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-   osmium osmctools\
+# install osmctools and  osmium-tool from jessie-backports 
+RUN awk '$1 ~ "^deb" { $3 = $3 "-backports"; print; exit }' /etc/apt/sources.list > /etc/apt/sources.list.d/backports.list  \
+ && apt-get update \
+ && apt-get -t jessie-backports install -y  "osmium-tool" \
+ && apt-get install -y --no-install-recommends osmctools \
  && apt-get clean \
  && rm -rf /tmp/* /var/tmp/* \
  && rm -rf /var/lib/apt/lists/* 

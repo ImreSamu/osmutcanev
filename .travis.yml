@@ -23,8 +23,9 @@ before_install:
   - docker -v
  
 script:
+  - sudo service docker restart
   - docker-compose config
   - ./download_osmlatest.sh
-  - make build
-  - make start
+  - sudo make build
+  - sudo make start
   
