@@ -36,6 +36,10 @@
         /* Formatting function for row details - modify as you need */
         function format(d) {
             // `d` is the original data object for the row
+
+            search_streetname= (d.o_utcanev != "") ?  d.o_utcanev: d.b_utcanev ;
+            search_city=  d.telepules.split(" ",1)
+
             return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
                 '<tr>' +
                 '<td>OSM urls:</td>' +
@@ -46,11 +50,15 @@
                 'style="display:block;word-break: break-all;">'+d.o_arri_shortid+'</a></td>'+
                 '</tr>' +                
                 '<tr>' +
-                '<td>Overpass Search:</td>' +
-                '<td> <a href="http://overpass-turbo.eu/?w=%22name%22=%22'+ d.o_utcanev + '%22+in+%22' +d.telepules+'%22&R"> '+
-                '"name"="'+ d.o_utcanev + '" in "' +d.telepules+'"</a></td>' +
+                '<td>Overpass - "name":</td>' +
+                '<td> <a href="http://overpass-turbo.eu/?w=%22name%22=%22'+  search_streetname + '%22+in+%22' +d.telepules.split(" ",1)+'%22&R"> '+
+                '"name"="'+ search_streetname + '" in "' + search_city +'"</a></td>' +
                 '</tr>' +
                 '<tr>' +
+                '<td>Overpass - "addr:street":</td>' +
+                '<td> <a href="http://overpass-turbo.eu/?w=%22addr:street%22=%22'+ search_streetname + '%22+in+%22' + search_city +'%22&R"> '+
+                '"addr:street"="'+ search_streetname + '" in "' + search_city +'"</a></td>' +
+                '</tr>' +                
                 '</table>';
         }
 
@@ -105,6 +113,14 @@
 </head>
 
 <body>
+    <table style="width: 1146px;" border="0">
+      <tbody>
+        <tr align="center">
+          <td style="width: 278.617px; height: 19px;">datafile:  LastOSMTimestamp: xxxxxxxxxxx </td>
+        </tr>
+      </tbody>
+    </table>
+
     <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
             <tr>

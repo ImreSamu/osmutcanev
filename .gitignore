@@ -8,6 +8,7 @@ src/osmutcanev/src/compare_temp.sql
 input/osmdata/hungary-latest.*
 
 posta/*
+_webdev/*
 __others/*
 # temp files
 *.out

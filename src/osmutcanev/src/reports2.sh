@@ -17,7 +17,9 @@ rm -f -r ${ajaxdir}/*.ajax
 rm -f -r ${repdir}/*.html 
 rm -f  ${telep_html} 
 
-
+cat /osm/output/web/template/index.html | \
+    sed -e "s#xxxxxxxxxxx#${LASTOSMTIMESTAMP}#g" | \
+    sed -e "s#yyyyyyyyyyy#${RUNTIME}#g" > /osm/output/web/index.html
 
 IFS=$'\n'
 
@@ -32,11 +34,11 @@ while read telepules; do
   echo '}'  >> $ajaxfilename
 
   telepuleshtml=${repdir}/${telepules}.html
-  cat ${template_html} |  sed -e "s#temp_debrecen.ajax#/ajax/${telepules}.ajax#g" >  ${telepuleshtml}
+  cat ${template_html} | sed -e "s#xxxxxxxxxxx#${LASTOSMTIMESTAMP}#g" | sed -e "s#temp_debrecen.ajax#/ajax/${telepules}.ajax#g" >  ${telepuleshtml}
 
 done </tmp/telepules.txt
 
 
 DB_PASS=osm /tools/latest/pgclimb --host $PGHOST -U osm -d osm  -o ${telep_html}  -c "SELECT * FROM par_telep_utca_percent ORDER BY telepules" template ${template_dir}/telepuleslista.tpl
-
+sed -i -e "s#xxxxxxxxxxx#${LASTOSMTIMESTAMP}#g"  ${telep_html}
 
