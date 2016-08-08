@@ -29,6 +29,8 @@ services:
     links:
      - db:db
     environment:
+     - LASTOSMTIMESTAMP=_missing_
+     - RUNTIME=_missing_
      - PGHOST=db         
      - PGUSER=osm
      - PGDATABASE=osm

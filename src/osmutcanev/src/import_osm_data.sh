@@ -40,6 +40,11 @@ function import_osmdata {
    -overwritecache \
    -deployproduction \
    -connection $PG_CONNECT
+
+   LASTOSMTIMESTAMP=$(osmium fileinfo $input_osm_pbf  -e --get=data.timestamp.last)
+   echo   LASTOSMTIMESTAMP=$LASTOSMTIMESTAMP
+   export LASTOSMTIMESTAMP=$LASTOSMTIMESTAMP
+
   break
  done
 }

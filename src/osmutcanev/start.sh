@@ -11,10 +11,15 @@ mkdir -p ./output/log
 mkdir -p ./output/web/pics
 mkdir -p ./output/web/reports/telepulesek
 
+export LASTOSMTIMESTAMP=_missing_
+
+RUNTIME=UTC$(date -u --rfc-3339="seconds")
+export RUNTIME=$RUNTIME
+
 
 function dataprocess {
  echo ' --- OSM IMPORT start --- ' 
- time ./src/import_osm_data.sh
+ . ./src/import_osm_data.sh
  echo ' --- SQL PREPROCESS OSM DATA start --- ' 
  time psql  -f "./src/preprocess.sql"
  echo ' --- BASE DATA IMPORT start --- ' 

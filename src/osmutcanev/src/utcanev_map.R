@@ -18,6 +18,8 @@ pngname    <- "./output/web/pics/osmhu_streetname_latest.png"
 
 maplabel1 <- Sys.getenv("MAPLABEL1") 
 maplabel2 <- Sys.getenv("MAPLABEL2")
+runtimelabel <- paste( "Runtime:", Sys.getenv("RUNTIME") )
+lastosmtimelabel <- paste ("  LastOsmTimestamp:", Sys.getenv("LASTOSMTIMESTAMP")  )
 
 con <- dbConnect(PostgreSQL())
 
@@ -85,7 +87,8 @@ spplot( hun_city_percent,"osm_allapot_szazalek",
       )
 
 grid.text("Completeness (percent)", x=unit(0.95, "npc"), y=unit(0.50, "npc"), rot=-90, , gp=gpar( col="Black"))
-grid.text(format(Sys.Date(), "%Y-%m-%d") , x=unit(0.85, "npc"), y=unit(0.10, "npc"), rot=0, gp=gpar(fontsize=40,col="midnightblue",fontface="bold"))
+grid.text( lastosmtimelabel , x=unit(0.72, "npc"), y=unit(0.06, "npc"), rot=0, gp=gpar(fontsize=20,col="midnightblue",fontface="bold"))
+grid.text( runtimelabel     , x=unit(0.84, "npc"), y=unit(0.04, "npc"), rot=0, gp=gpar(fontsize=10,col="darkblue"))
 
 grid.text(hun_stat_e_str0 , x=unit(0.10, "npc"), y=unit(0.91, "npc"), rot=0, , gp=gpar(fontsize=28,col="darkgreen",fontface="bold",family="mono") )
 grid.text(hun_stat_s_str0 , x=unit(0.10, "npc"), y=unit(0.86, "npc"), rot=0, , gp=gpar(fontsize=28,col="darkgoldenrod1",fontface="bold",family="mono") )
