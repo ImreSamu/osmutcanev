@@ -106,12 +106,12 @@ sortable.html.table(rs, '00_NINCS_HASONLO_OSM.html' , exportdir, '00_NINCS_HASON
 ##   par_telep_utca_percent
 s<- "select 
                        telepules as település
-                     , OSM_allapot_szazalek    as OSM_utcanév_lefedettség_százalék
+                     , osm_allapot_szazalek    as OSM_utcanév_lefedettség_százalék
                      , _db_egyezo              as egyező_utcanév_db
                      , _db_hasonlo             as hasonló_utcanév_db
                      , _db_nincs_hasonlo_osm   as OSM_ből_hiányzó_utcanév_db
                     from   par_telep_utca_percent
-                    order by OSM_allapot_szazalek desc
+                    order by osm_allapot_szazalek desc
                     "
 s <- gsub("Bázis",basename,s)
                     

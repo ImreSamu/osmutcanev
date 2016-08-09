@@ -28,7 +28,7 @@ con <- dbConnect(PostgreSQL())
 
 hun_city_percent <- get_postgis_query(con, 
  "SELECT name
-     ,OSM_allapot_szazalek
+     ,osm_allapot_szazalek
      ,db_egyezo
      ,db_hasonlo
      ,db_nincs_hasonlo_osm 

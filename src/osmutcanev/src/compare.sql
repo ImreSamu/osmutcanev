@@ -183,7 +183,7 @@ select
          else 0
       end ::numeric
      ,0 ) 
-          as OSM_allapot_szazalek
+          as osm_allapot_szazalek
   , _db_egyezo
   , _db_hasonlo
   , _db_nincs_hasonlo_osm 
@@ -204,7 +204,7 @@ FROM par_telep_utca_all
 GROUP BY telepules 
 ORDER BY telepules 
 ) pp
-order by OSM_allapot_szazalek desc
+order by osm_allapot_szazalek desc
 ;
 
 
@@ -229,7 +229,7 @@ Create         table hun_city_percent as
 SELECT 
  ROW_NUMBER()  OVER (ORDER BY name  ASC) as gid 
 ,name
-,COALESCE(OSM_allapot_szazalek,0)  as OSM_allapot_szazalek
+,COALESCE(osm_allapot_szazalek,0)  as osm_allapot_szazalek
 ,COALESCE(db_egyezo,0)             as db_egyezo 
 ,COALESCE(db_hasonlo,0)            as db_hasonlo
 ,COALESCE(db_nincs_hasonlo_osm,0)  as db_nincs_hasonlo_osm 
@@ -241,7 +241,7 @@ from (
 
 select
  name
-,percent.OSM_allapot_szazalek  as OSM_allapot_szazalek
+,percent.osm_allapot_szazalek  as osm_allapot_szazalek
 ,percent._db_egyezo            as db_egyezo
 ,percent._db_hasonlo           as db_hasonlo
 ,percent._db_nincs_hasonlo_osm as db_nincs_hasonlo_osm
