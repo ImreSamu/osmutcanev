@@ -3,7 +3,7 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-readonly OSM_ADMIN_BASE=hungary-160101
+readonly OSM_ADMIN_BASE=hungary-190101
 
 cd ./input/osmadmin
 rm -f *.pbf
