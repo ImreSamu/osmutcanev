@@ -6,9 +6,10 @@ RUN install2.r --error \
     RPostgreSQL \
     gtools \
     ggplot2 \
-    devtools
+    devtools \
+    postGIStools
 
-RUN Rscript -e 'devtools::install_github("SESYNC-ci/postGIStools") '
+#RUN Rscript -e 'devtools::install_github("SESYNC-ci/postGIStools") '
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
